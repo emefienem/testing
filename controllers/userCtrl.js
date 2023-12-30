@@ -27,7 +27,9 @@ const userCtrl = {
       const refreshtoken = createRefreshToken({ id: newUser._id });
       res.cookie("refreshtoken", refreshtoken, {
         httpOnly: true,
-        path: "/user/refresh_token",
+        path: "/user/refresh-token",
+        maxAge: 60 * 60 * 24 * 30 * 1000,
+        signed: true,
       });
 
       return res.json({ accesstoken });
@@ -50,7 +52,9 @@ const userCtrl = {
       const refreshtoken = createRefreshToken({ id: user._id });
       res.cookie("refreshtoken", refreshtoken, {
         httpOnly: true,
-        path: "/user/refresh_token",
+        path: "/user/refresh-token",
+        maxAge: 60 * 60 * 24 * 30 * 1000,
+        signed: true,
       });
 
       return res.json({ accesstoken });
@@ -62,7 +66,7 @@ const userCtrl = {
   logout: async (req, res) => {
     try {
       res.clearCookie("refreshtoken", {
-        path: "/user/refresh_token",
+        path: "/user/refresh-token",
       });
       res.json({ msg: "Logged Out" });
     } catch (error) {
@@ -79,9 +83,9 @@ const userCtrl = {
       jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) return res.status(400).json({ msg: "Login or Register now" });
         const accesstoken = createAccessToken({ id: user.id });
+
         return res.json({ accesstoken });
       });
-      //   res.json({ rf_token });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
