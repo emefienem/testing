@@ -17,11 +17,7 @@ const userCtrl = {
           .json({ msg: "password should be at least 6 characters long" });
 
       const hashPassword = await bcrypt.hash(password, 10);
-      const newUser = new Users({
-        name,
-        email,
-        password: hashPassword,
-      });
+
       await newUser.save();
       const accesstoken = createAccessToken({ id: newUser._id });
       const refreshtoken = createRefreshToken({ id: newUser._id });
@@ -76,7 +72,8 @@ const userCtrl = {
 
   refreshToken: async (req, res) => {
     try {
-      const rf_token = req.cookies.refreshtoken;
+      const rf_token = req.signedCookies.refreshtoken;
+      console.log(rf_token);
       if (!rf_token)
         return res.status(400).json({ msg: "Please Login or Register" });
 
@@ -97,6 +94,22 @@ const userCtrl = {
       if (!user) return res.status(400).json({ msg: "User does not exit" });
 
       return res.json(user);
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+  },
+
+  addCart: async (req, res) => {
+    try {
+      const user = await Users.findById(req.user.id);
+      if (!user) return res.status(400).json({ msg: "User does not exit" });
+      await Users.findOneAndUpdate(
+        { _id: req.user.id },
+        {
+          cart: req.body.cart,
+        }
+      );
+      return res.json({ msg: "Added to cart" });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
