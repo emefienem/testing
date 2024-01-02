@@ -9,5 +9,7 @@ router.get("/logout", userCtrl.logout);
 router.get("/refresh-token", userCtrl.refreshToken);
 router.get("/infor", auth, userCtrl.getUser);
 router.patch("/addcart", auth, userCtrl.addCart);
+router.post("/forgot-password", userCtrl.forgotPassword);
+router.post("/reset-password", userCtrl.resetPassword);
 
 module.exports = router;

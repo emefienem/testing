@@ -21,7 +21,6 @@ const categorCtrl = {
 
       await newCatgory.save();
       return res.json({ msg: "Created category successfully" });
-      res.json("Check admin success");
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
